@@ -1,0 +1,515 @@
+{
+  "name": "AI продажник в телеграмм ТЕСТ",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        840,
+        320
+      ],
+      "id": "39a37092-1103-40f8-959c-f1c7828a11c1",
+      "name": "ава с форест гампом",
+      "webhookId": "13d56c4a-2fa8-43d0-a9ed-7f83a6533907",
+      "credentials": {
+        "telegramApi": {
+          "id": "dybi5Addv9bSdypq",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1060,
+        320
+      ],
+      "id": "8dcab021-2c19-427b-a61c-aa29365f8c5a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        580
+      ],
+      "id": "73c9fa25-90c1-424e-ac97-18b41e972b87",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "6whbKHg0kO9eHjrH",
+          "name": "testflowsales"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('ава с форест гампом').item.json.message.text }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1140,
+        580
+      ],
+      "id": "d6468f57-ccb7-4cd1-92b2-cf0317c78ccd",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1nFWDqsCghixjshb0-I-fx3o3QPq8SCliFrlKo3XmlLg",
+          "mode": "list",
+          "cachedResultName": "база квартир в ЖК",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nFWDqsCghixjshb0-I-fx3o3QPq8SCliFrlKo3XmlLg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "основное",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1nFWDqsCghixjshb0-I-fx3o3QPq8SCliFrlKo3XmlLg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        1400,
+        560
+      ],
+      "id": "9da51831-d3ab-4b66-ac25-ac5d0ff6b69d",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LZd3kTFQCSO5RUZj",
+          "name": "Таблица продажника в ТГ"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1MHX7atZ0XduqLzvctPx4DI6gwiyLjQ0-Tll73KORm8M",
+          "mode": "list",
+          "cachedResultName": "Логирование валли",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MHX7atZ0XduqLzvctPx4DI6gwiyLjQ0-Tll73KORm8M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "основное",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MHX7atZ0XduqLzvctPx4DI6gwiyLjQ0-Tll73KORm8M/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Дата и время": "={{ $now }}",
+            "ID клиента": "={{ $('ава с форест гампом').item.json.message.chat.id }}",
+            "Фраза клиента": "={{ $('ава с форест гампом').item.json.message.text }}",
+            "Фраза бота": "={{ $json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Дата и время",
+              "displayName": "Дата и время",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID клиента",
+              "displayName": "ID клиента",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Фраза клиента",
+              "displayName": "Фраза клиента",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Фраза бота",
+              "displayName": "Фраза бота",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1420,
+        320
+      ],
+      "id": "e7cbedae-2e07-4fde-9aaa-24abe86e64e0",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LZd3kTFQCSO5RUZj",
+          "name": "Таблица продажника в ТГ"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "expression",
+        "numberOutputs": 2,
+        "output": "={{/(\\+7|8)[\\s\\-]?\\(?\\d{3}\\)?[\\s\\-]?\\d{3}[\\s\\-]?\\d{2}[\\s\\-]?\\d{2}/.test($json[\"Фраза клиента\"])\n}}"
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1640,
+        320
+      ],
+      "id": "981bc872-d617-44bd-84ee-9878975c7664",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "content": "AI продавец в телеграмм -автоматизация продаж \n",
+        "height": 1020,
+        "width": 1300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        760,
+        0
+      ],
+      "id": "80a4ebdc-5c47-44cb-ac9c-063cb4244bba",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('ава с форест гампом').item.json.message.chat.id }}",
+        "text": "={{ $('AI Agent').item.json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1860,
+        100
+      ],
+      "id": "1bf52a04-b23a-407f-8524-1a666434acc7",
+      "name": "Send a text message",
+      "webhookId": "cbce24b5-f950-42d4-aaf8-2d5528c4ea0d",
+      "credentials": {
+        "telegramApi": {
+          "id": "dybi5Addv9bSdypq",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1MHX7atZ0XduqLzvctPx4DI6gwiyLjQ0-Tll73KORm8M",
+          "mode": "list",
+          "cachedResultName": "Логирование валли",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MHX7atZ0XduqLzvctPx4DI6gwiyLjQ0-Tll73KORm8M/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "основное",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MHX7atZ0XduqLzvctPx4DI6gwiyLjQ0-Tll73KORm8M/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID клиента",
+              "lookupValue": "={{ $json['ID клиента'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        2160,
+        420
+      ],
+      "id": "7ffcdadc-6284-4c15-bf18-25454289d293",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "LZd3kTFQCSO5RUZj",
+          "name": "Таблица продажника в ТГ"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Объединяем все данные (из чтения + Switch)\nconst allItems = [...items];\n\n// Пробуем достать номер из последних фраз\nconst phoneRegex = /(?:\\+7|8)?\\d{10,}/;\n\nconst lastWithPhone = [...allItems].reverse().find(i => {\n  const phrase = i.json[\"Фраза клиента\"];\n  return typeof phrase === 'string' && phoneRegex.test(phrase.trim());\n});\n\nlet namePhone = \"Имя и телефон не указаны\";\n\nif (lastWithPhone) {\n  const phrase = String(lastWithPhone.json[\"Фраза клиента\"]);\n  const phoneMatch = phrase.match(phoneRegex);\n  if (phoneMatch) {\n    const phone = phoneMatch[0].trim();\n    const nameOnly = phrase.replace(phoneRegex, '').trim();\n    namePhone = nameOnly ? `${phone} ${nameOnly}` : phone;\n  }\n}\n\n// Сбор диалога без /reset\nconst summary = allItems\n  .filter(i => {\n    const text = i.json[\"Фраза клиента\"];\n    return typeof text !== 'string' || !text.startsWith('/reset');\n  })\n  .map(i => {\n    const client = i.json[\"Фраза клиента\"];\n    const bot = i.json[\"Фраза бота\"];\n    return [\n      client !== undefined ? `👤 Клиент: ${String(client)}` : null,\n      bot !== undefined ? `🤖 Бот: ${String(bot)}` : null\n    ].filter(Boolean).join('\\n');\n  })\n  .filter(Boolean)\n  .join('\\n\\n');\n\n// Финальный вывод\nreturn [\n  {\n    json: {\n      message: `📩 Новая заявка от клиента!\\n\\n📱: ${namePhone}\\n\\n🗨 Диалог:\\n\\n${summary}`\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2360,
+        420
+      ],
+      "id": "c8a57a77-1184-4082-bc89-08c290e181fd",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002706025904",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2600,
+        420
+      ],
+      "id": "1215963b-f2e5-4583-9723-c5b1727b4ffb",
+      "name": "Send a text message1",
+      "webhookId": "f1f38f11-170c-4995-bfb8-982baa505c26",
+      "credentials": {
+        "telegramApi": {
+          "id": "dybi5Addv9bSdypq",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Передача лида\n",
+        "height": 460,
+        "width": 680,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        260
+      ],
+      "id": "54cb3010-06b0-4ef8-821f-727d85d8645f",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "финальное сообщение\n",
+        "height": 260,
+        "width": 680,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2120,
+        760
+      ],
+      "id": "f2cb00d0-ca96-4188-8b5d-d97cafb5a023",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json['ID клиента'] }}",
+        "text": "=Спасибо, {{ $json[\"Фраза клиента\"].match(/[А-ЯЁA-Z][а-яёa-z]+/g)?.[0] }}! 🙏 Я записал ваш номер. Менеджер Лия свяжется с вами в ближайшее время, чтобы согласовать удобное время для презентации. Если у вас будут дополнительные вопросы, не стесняйтесь обращаться!",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2360,
+        820
+      ],
+      "id": "14aaaa5d-3f96-4d9b-ac1c-a8042a454335",
+      "name": "Ответ пользователю",
+      "webhookId": "32250221-dc52-444e-9828-1580a83ab9b6",
+      "credentials": {
+        "telegramApi": {
+          "id": "dybi5Addv9bSdypq",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "ава с форест гампом": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ответ пользователю",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "6708c8c0-4861-4439-a53b-ccfcba7f50d7",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "eede5a0f19a88813312a63afca12c1745489ee42d3a347c580ae58112f7bc486"
+  },
+  "id": "VNuFJZxq52jhB1X2",
+  "tags": []
+}
